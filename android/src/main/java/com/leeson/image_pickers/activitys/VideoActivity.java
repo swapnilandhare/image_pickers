@@ -24,6 +24,7 @@ import java.io.File;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.view.WindowCompat;
 
 /**
  * Created by lisen on 2018-09-14.
@@ -55,6 +56,12 @@ public class VideoActivity extends BaseActivity{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+        
+        // Force opt-out of edge-to-edge
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        }
+        
         setContentView(R.layout.activity_video);
         videoView = findViewById(R.id.videoView);
         layout_root = findViewById(R.id.layout_root);
