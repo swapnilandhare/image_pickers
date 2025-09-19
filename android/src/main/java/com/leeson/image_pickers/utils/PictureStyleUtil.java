@@ -2,6 +2,7 @@ package com.leeson.image_pickers.utils;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 
 import com.leeson.image_pickers.R;
 import com.luck.picture.lib.style.AlbumWindowStyle;
@@ -84,7 +85,12 @@ public class PictureStyleUtil {
         SelectMainStyle selectMainStyle = selectorStyle.getSelectMainStyle();
         selectMainStyle.setStatusBarColor(argb);
         selectMainStyle.setSelectNumberStyle(true);
-
+        
+        // Force edge-to-edge opt-out for Android 10+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            selectMainStyle.isDarkStatusBarBlack(false);
+        }
+        
         selectorStyle.setSelectMainStyle(selectMainStyle);
         albumWindowStyle.setAlbumAdapterItemSelectStyle(R.drawable.num_oval_black);
         if (l > (int) (255 * 0.7)) {

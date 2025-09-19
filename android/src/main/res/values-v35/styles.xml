@@ -7,6 +7,9 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@android:color/white</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">never</item>
+        <item name="android:enforceStatusBarContrast">true</item>
+        <item name="android:enforceNavigationBarContrast">true</item>
         
         <!-- Original customizations -->
         <item name="colorPrimary">@color/white</item>
@@ -20,6 +23,9 @@
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">never</item>
+        <item name="android:enforceStatusBarContrast">true</item>
+        <item name="android:enforceNavigationBarContrast">true</item>
         
         <!-- Original customizations -->
         <item name="android:windowContentOverlay">@null</item>

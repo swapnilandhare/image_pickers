@@ -57,9 +57,23 @@ public class VideoActivity extends BaseActivity{
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         
-        // Force opt-out of edge-to-edge
+        // Comprehensive edge-to-edge prevention
+        Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            WindowCompat.setDecorFitsSystemWindows(window, true);
+        }
+        
+        // Additional window flags to prevent edge-to-edge
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            
+            WindowManager.LayoutParams attrs = window.getAttributes();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                attrs.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER;
+            }
+            window.setAttributes(attrs);
         }
         
         setContentView(R.layout.activity_video);
