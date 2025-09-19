@@ -1,35 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- AppTheme with edge-to-edge opt-out -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
-        <item name="android:fitsSystemWindows">true</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@android:color/white</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">never</item>
-        <item name="android:enforceStatusBarContrast">true</item>
-        <item name="android:enforceNavigationBarContrast">true</item>
-        
-        <!-- Original customizations -->
+
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/white</item>
+
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <!-- TransTheme with edge-to-edge opt-out -->
-    <style name="TransTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
-        <item name="android:fitsSystemWindows">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <style name="TransTheme" parent="AppTheme">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">never</item>
-        <item name="android:enforceStatusBarContrast">true</item>
-        <item name="android:enforceNavigationBarContrast">true</item>
-        
-        <!-- Original customizations -->
+        <!--<item name="android:windowDisablePreview">true</item>-->
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>

@@ -5,12 +5,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import androidx.core.view.WindowCompat;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.leeson.image_pickers.AppPath;
 import com.leeson.image_pickers.R;
@@ -75,39 +71,9 @@ public class SelectPicsActivity extends BaseActivity {
     @Override
     public void onCreate(@androidx.annotation.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Comprehensive edge-to-edge prevention
-        Window window = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            WindowCompat.setDecorFitsSystemWindows(window, true);
-        }
-        
-        // Additional window flags to prevent edge-to-edge
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            
-            WindowManager.LayoutParams attrs = window.getAttributes();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                attrs.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER;
-            }
-            window.setAttributes(attrs);
-        }
-        
         setContentView(R.layout.activity_select_pics);
 
         startSel();
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Re-enforce edge-to-edge opt-out in case other code overrides it
-        Window window = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            WindowCompat.setDecorFitsSystemWindows(window, true);
-        }
     }
 
     private UCrop.Options buildOptions(PictureSelectorStyle selectorStyle) {
