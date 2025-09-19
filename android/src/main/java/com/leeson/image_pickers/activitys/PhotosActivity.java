@@ -34,6 +34,9 @@ import com.bumptech.glide.request.target.Target;
 import com.leeson.image_pickers.AppPath;
 import com.leeson.image_pickers.R;
 import com.leeson.image_pickers.utils.CommonUtils;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.graphics.Insets;
 
 import java.io.File;
 import java.util.HashMap;
@@ -363,6 +366,21 @@ public class PhotosActivity extends BaseActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }*/
         setContentView(R.layout.activity_photos);
+
+        // Apply bottom padding for system bars to avoid overlap
+        View root = findViewById(android.R.id.content);
+        if (root instanceof ViewGroup) {
+            ViewGroup contentGroup = (ViewGroup) root;
+            if (contentGroup.getChildCount() > 0) {
+                View child = contentGroup.getChildAt(0);
+                ViewCompat.setOnApplyWindowInsetsListener(child, (v, insets) -> {
+                    Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    v.setPadding(v.getPaddingLeft(), bars.top, v.getPaddingRight(), bars.bottom);
+                    return insets;
+                });
+                child.requestApplyInsets();
+            }
+        }
 
         viewPager = findViewById(R.id.viewPager);
         layout_tip = findViewById(R.id.layout_tip);

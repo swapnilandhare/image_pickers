@@ -16,6 +16,9 @@ import com.leeson.image_pickers.utils.ImageCompressEngine;
 import com.leeson.image_pickers.utils.ImageCropEngine;
 import com.leeson.image_pickers.utils.MeSandboxFileEngine;
 import com.leeson.image_pickers.utils.PictureStyleUtil;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.graphics.Insets;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
@@ -72,6 +75,21 @@ public class SelectPicsActivity extends BaseActivity {
     public void onCreate(@androidx.annotation.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_pics);
+
+        // Apply bottom padding for system bars to avoid overlap
+        android.view.View root = findViewById(android.R.id.content);
+        if (root instanceof android.view.ViewGroup) {
+            android.view.ViewGroup contentGroup = (android.view.ViewGroup) root;
+            if (contentGroup.getChildCount() > 0) {
+                android.view.View child = contentGroup.getChildAt(0);
+                ViewCompat.setOnApplyWindowInsetsListener(child, (v, insets) -> {
+                    Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    v.setPadding(v.getPaddingLeft(), bars.top, v.getPaddingRight(), bars.bottom);
+                    return insets;
+                });
+                child.requestApplyInsets();
+            }
+        }
 
         startSel();
     }

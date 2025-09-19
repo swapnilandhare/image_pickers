@@ -24,6 +24,9 @@ import java.io.File;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.graphics.Insets;
 
 /**
  * Created by lisen on 2018-09-14.
@@ -56,6 +59,22 @@ public class VideoActivity extends BaseActivity{
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
+
+        // Apply bottom padding for system bars to avoid overlap
+        View root = findViewById(android.R.id.content);
+        if (root instanceof android.view.ViewGroup) {
+            android.view.ViewGroup contentGroup = (android.view.ViewGroup) root;
+            if (contentGroup.getChildCount() > 0) {
+                View child = contentGroup.getChildAt(0);
+                ViewCompat.setOnApplyWindowInsetsListener(child, (v, insets) -> {
+                    Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    v.setPadding(v.getPaddingLeft(), bars.top, v.getPaddingRight(), bars.bottom);
+                    return insets;
+                });
+                child.requestApplyInsets();
+            }
+        }
+
         videoView = findViewById(R.id.videoView);
         layout_root = findViewById(R.id.layout_root);
         videoParent = findViewById(R.id.videoParent);
