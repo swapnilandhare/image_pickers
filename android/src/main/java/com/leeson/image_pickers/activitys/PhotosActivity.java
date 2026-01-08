@@ -50,7 +50,6 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-
 /**
  * Created by Administrator on 2017/5/23.
  * lisen
@@ -62,7 +61,6 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 @SuppressWarnings("all")
 public class PhotosActivity extends BaseActivity {
 
-
     public static final String IMAGES = "IMAGES";
     public static final String CURRENT_POSITION = "CURRENT_POSITION";
     ViewPager viewPager;
@@ -71,11 +69,10 @@ public class PhotosActivity extends BaseActivity {
     private List<String> images;
     private Number currentPosition;
 
-
     private LayoutInflater inflater;
 
     private DisplayMetrics outMetrics;
-    private int videoHeight,videoWidth;
+    private int videoHeight, videoWidth;
     private VideoView currentVideoView;
     private ImageView currentPlay;
     private ImageView currentSrc;
@@ -84,7 +81,7 @@ public class PhotosActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return images.size();
+            return images != null ? images.size() : 0;
         }
 
         @Override
@@ -99,10 +96,10 @@ public class PhotosActivity extends BaseActivity {
             String url = images.get(position);
             String ext = MimeTypeMap.getFileExtensionFromUrl(url);
             String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
-            if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")){
-                view = setupVideo(container,url);
-            }else{
-                view = setupImage(container,url);
+            if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
+                view = setupVideo(container, url);
+            } else {
+                view = setupImage(container, url);
             }
 
             container.addView(view);
@@ -115,8 +112,7 @@ public class PhotosActivity extends BaseActivity {
             container.removeView(view);
         }
 
-
-        private View setupVideo(ViewGroup container,String videoPath){
+        private View setupVideo(ViewGroup container, String videoPath) {
             View view = inflater.inflate(R.layout.item_activity_video, container, false);
             VideoView videoView = view.findViewById(R.id.videoView);
             LinearLayout layout_root = view.findViewById(R.id.layout_root);
@@ -130,21 +126,22 @@ public class PhotosActivity extends BaseActivity {
                         currentVideoView = null;
                     }
                     Uri uri;
-                    if (videoPath.startsWith("http")){
+                    if (videoPath.startsWith("http")) {
                         uri = Uri.parse(videoPath);
-                    }else{
+                    } else {
                         if (Build.VERSION.SDK_INT >= 24) {
-                            uri = FileProvider.getUriForFile(PhotosActivity.this, getPackageName() + ".luckProvider", new File(videoPath));
-                        }else{
+                            uri = FileProvider.getUriForFile(PhotosActivity.this, getPackageName() + ".luckProvider",
+                                    new File(videoPath));
+                        } else {
                             uri = Uri.parse(videoPath);
                         }
                     }
                     currentVideoView = videoView;
                     currentPlay = iv_play;
-                    //设置视频路径
+                    // 设置视频路径
                     videoView.setVideoURI(uri);
 
-                    //开始播放视频
+                    // 开始播放视频
                     videoView.start();
                 }
             });
@@ -158,7 +155,7 @@ public class PhotosActivity extends BaseActivity {
                     mediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener() {
                         @Override
                         public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START){
+                            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                                 iv_src.setVisibility(View.GONE);
                                 iv_play.setVisibility(View.GONE);
                             }
@@ -171,56 +168,58 @@ public class PhotosActivity extends BaseActivity {
                 @Override
                 public void run() {
                     MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                    if (videoPath.startsWith("http")){
+                    if (videoPath.startsWith("http")) {
 
-                        final String fileName = videoPath.substring(videoPath.lastIndexOf("/") + 1).replaceAll("\\.","_")+".png";
+                        final String fileName = videoPath.substring(videoPath.lastIndexOf("/") + 1).replaceAll("\\.",
+                                "_") + ".png";
 
                         AppPath appPath = new AppPath(PhotosActivity.this);
-                        File file = new File(appPath.getAppImgDirPath(),fileName);
-                        if(file.exists()){
+                        File file = new File(appPath.getAppImgDirPath(), fileName);
+                        if (file.exists()) {
                             Glide.with(PhotosActivity.this).load(file).into(iv_src);
-                        }else{
+                        } else {
                             try {
-                                retriever.setDataSource(videoPath,new HashMap<>());
+                                retriever.setDataSource(videoPath, new HashMap<>());
                                 Bitmap bitmap = retriever.getFrameAtTime();
                                 iv_src.setImageBitmap(bitmap);
-                                CommonUtils.saveBitmapByPath(PhotosActivity.this,appPath.getAppImgDirPath(),fileName,bitmap);
+                                CommonUtils.saveBitmapByPath(PhotosActivity.this, appPath.getAppImgDirPath(), fileName,
+                                        bitmap);
                                 retriever.release();
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
 
-                    }else{
+                    } else {
                         try {
                             retriever.setDataSource(videoPath);
                             Bitmap bitmap = retriever.getFrameAtTime();
                             iv_src.setImageBitmap(bitmap);
                             retriever.release();
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                     }
                 }
-            },200);
+            }, 200);
 
             layout_root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (currentVideoView != null && currentPlay != null){
-                        if (currentVideoView.isPlaying()){
+                    if (currentVideoView != null && currentPlay != null) {
+                        if (currentVideoView.isPlaying()) {
                             currentVideoView.pause();
                             currentPlay.setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             finish();
                         }
-                    }else{
+                    } else {
                         finish();
                     }
                 }
             });
-            //播放完成回调
+            // 播放完成回调
             videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
@@ -229,7 +228,8 @@ public class PhotosActivity extends BaseActivity {
             });
             return view;
         }
-        private View setupImage(ViewGroup container,String url){
+
+        private View setupImage(ViewGroup container, String url) {
 
             View view = inflater.inflate(R.layout.item_activity_photos, container, false);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
@@ -238,10 +238,12 @@ public class PhotosActivity extends BaseActivity {
             attacher.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                        /*if (TextUtils.isEmpty(momontId)){
-                            return false;
-                        }else{
-                        }*/
+                    /*
+                     * if (TextUtils.isEmpty(momontId)){
+                     * return false;
+                     * }else{
+                     * }
+                     */
                     return true;
                 }
             });
@@ -262,18 +264,20 @@ public class PhotosActivity extends BaseActivity {
                         .load(url)
                         .listener(new RequestListener<GifDrawable>() {
                             @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                    Target<GifDrawable> target, boolean isFirstResource) {
                                 return false;
                             }
 
                             @Override
-                            public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
+                            public boolean onResourceReady(GifDrawable resource, Object model,
+                                    Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
                                 int resWidth = resource.getIntrinsicWidth();
                                 int reHeight = resource.getIntrinsicHeight();
                                 float scaleWH = (float) resWidth / (float) reHeight;
-                                int photoViewHeight = (int) (CommonUtils.getScreenWidth(PhotosActivity.this) /scaleWH);
+                                int photoViewHeight = (int) (CommonUtils.getScreenWidth(PhotosActivity.this) / scaleWH);
                                 ViewGroup.LayoutParams layoutParams = photoView.getLayoutParams();
-                                layoutParams.width =  CommonUtils.getScreenWidth(PhotosActivity.this);
+                                layoutParams.width = CommonUtils.getScreenWidth(PhotosActivity.this);
                                 layoutParams.height = photoViewHeight;
                                 photoView.setLayoutParams(layoutParams);
 
@@ -288,12 +292,14 @@ public class PhotosActivity extends BaseActivity {
 
                 Glide.with(PhotosActivity.this).asDrawable().load(url).listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target,
+                            boolean isFirstResource) {
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
+                            DataSource dataSource, boolean isFirstResource) {
                         photoView.setImageDrawable(resource);
                         attacher.update();
                         progressBar.setVisibility(View.GONE);
@@ -314,32 +320,33 @@ public class PhotosActivity extends BaseActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             updateVideoViewSize();
-        }else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             updateVideoViewSize();
         }
     }
 
     private void updateVideoViewSize() {
-        if (videoHeight == 0 || videoWidth == 0 || currentVideoView == null){
+        if (videoHeight == 0 || videoWidth == 0 || currentVideoView == null) {
             return;
         }
-        Configuration mConfiguration = getResources().getConfiguration(); //获取设置的配置信息
-        if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT){
+        Configuration mConfiguration = getResources().getConfiguration(); // 获取设置的配置信息
+        if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             RelativeLayout.LayoutParams videoViewParam;
-            float height = ((videoHeight*1f / videoWidth) * outMetrics.widthPixels);
+            float height = ((videoHeight * 1f / videoWidth) * outMetrics.widthPixels);
             videoViewParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) height);
             videoViewParam.addRule(RelativeLayout.CENTER_IN_PARENT);
             currentVideoView.setLayoutParams(videoViewParam);
-        }else{
+        } else {
             RelativeLayout.LayoutParams videoViewParam;
-            float width = ((videoWidth*1f / videoHeight) * outMetrics.widthPixels);
-            videoViewParam = new RelativeLayout.LayoutParams((int) width,RelativeLayout.LayoutParams.MATCH_PARENT);
+            float width = ((videoWidth * 1f / videoHeight) * outMetrics.widthPixels);
+            videoViewParam = new RelativeLayout.LayoutParams((int) width, RelativeLayout.LayoutParams.MATCH_PARENT);
             videoViewParam.addRule(RelativeLayout.CENTER_IN_PARENT);
             currentVideoView.setLayoutParams(videoViewParam);
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -355,16 +362,17 @@ public class PhotosActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
 
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setNavigationBarColor(0xffffff);
-            WindowManager.LayoutParams attrs = window.getAttributes();
-            attrs.layoutInDisplayCutoutMode =
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-            window.setAttributes(attrs);
-            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }*/
+        /*
+         * if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+         * Window window = getWindow();
+         * window.setNavigationBarColor(0xffffff);
+         * WindowManager.LayoutParams attrs = window.getAttributes();
+         * attrs.layoutInDisplayCutoutMode =
+         * WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+         * window.setAttributes(attrs);
+         * window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+         * }
+         */
         setContentView(R.layout.activity_photos);
 
         // Apply bottom padding for system bars to avoid overlap
@@ -403,7 +411,8 @@ public class PhotosActivity extends BaseActivity {
                     } else {
                         view.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_gray));
                     }
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     params.width = params.height = dp2px(6);
                     params.leftMargin = params.rightMargin = dp2px(5);
                     view.setLayoutParams(params);
@@ -426,7 +435,7 @@ public class PhotosActivity extends BaseActivity {
                     currentVideoView.suspend();
                     currentVideoView = null;
                 }
-                if (currentPlay != null){
+                if (currentPlay != null) {
                     currentPlay.setVisibility(View.VISIBLE);
                 }
             }

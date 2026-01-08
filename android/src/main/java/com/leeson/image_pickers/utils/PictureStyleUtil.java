@@ -24,6 +24,7 @@ public class PictureStyleUtil {
 
     private Context context;
     private PictureSelectorStyle selectorStyle = new PictureSelectorStyle();
+
     public PictureStyleUtil(Context context) {
         this.context = context;
     }
@@ -40,6 +41,10 @@ public class PictureStyleUtil {
      */
 
     public void setStyle(Map<String, Number> uiColor) {
+        // Null check to prevent NullPointerException
+        if (uiColor == null) {
+            uiColor = new java.util.HashMap<>();
+        }
 
         int a = 255;
         int r = 255;
@@ -100,7 +105,7 @@ public class PictureStyleUtil {
             bottomBarStyle.setBottomSelectNumTextColor(color);
 
             selectMainStyle.setSelectTextColor(color);
-        }else{
+        } else {
 
             int color = ContextCompat.getColor(context, R.color.white);
             titleBarStyle.setTitleLeftBackResource(com.luck.picture.lib.R.drawable.ps_ic_back);
@@ -120,10 +125,9 @@ public class PictureStyleUtil {
         selectMainStyle.setPreviewBackgroundColor(ContextCompat.getColor(context, R.color.white));
         selectMainStyle.setAdapterSelectTextColor(ContextCompat.getColor(context, R.color.white));
         selectMainStyle.setSelectBackground(R.drawable.num_oval_black_def);
-        selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(context,R.color.white));
+        selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(context, R.color.white));
         selectMainStyle.setPreviewSelectNumberStyle(true);
 
     }
-
 
 }

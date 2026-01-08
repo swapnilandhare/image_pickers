@@ -35,7 +35,7 @@ import androidx.core.graphics.Insets;
  * @author lisen < 453354858@qq.com >
  */
 
-public class VideoActivity extends BaseActivity{
+public class VideoActivity extends BaseActivity {
     private static final int READ_SDCARD = 101;
     public static final String VIDEO_PATH = "VIDEO_PATH";
     public static final String THUMB_PATH = "THUMB_PATH";
@@ -50,7 +50,7 @@ public class VideoActivity extends BaseActivity{
     private String thumbPath;
 
     private DisplayMetrics outMetrics;
-    private int videoHeight,videoWidth;
+    private int videoHeight, videoWidth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,23 +92,27 @@ public class VideoActivity extends BaseActivity{
     }
 
     protected void startPlay() {
-        if (!TextUtils.isEmpty(thumbPath)){
+        // Null check to prevent NullPointerException when videoPath is not provided
+        if (videoPath == null) {
+            finish();
+            return;
+        }
+        if (!TextUtils.isEmpty(thumbPath)) {
             Glide.with(this).asBitmap().load(thumbPath).into(iv_src);
             iv_src.setVisibility(View.VISIBLE);
         }
-        //网络视频url或本地视频路径
+        // 网络视频url或本地视频路径
 
         Uri uri;
-        if (videoPath.startsWith("http")){
+        if (videoPath.startsWith("http")) {
             uri = Uri.parse(videoPath);
-        }else{
+        } else {
             if (Build.VERSION.SDK_INT >= 24) {
                 uri = FileProvider.getUriForFile(this, getPackageName() + ".luckProvider", new File(videoPath));
-            }else{
+            } else {
                 uri = Uri.parse(videoPath);
             }
         }
-
 
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -120,7 +124,7 @@ public class VideoActivity extends BaseActivity{
                 mediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener() {
                     @Override
                     public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                        if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START){
+                        if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                             iv_src.setVisibility(View.GONE);
                             progressBar.setVisibility(View.GONE);
                         }
@@ -130,10 +134,10 @@ public class VideoActivity extends BaseActivity{
             }
         });
 
-        //设置视频路径
+        // 设置视频路径
         videoView.setVideoURI(uri);
 
-        //开始播放视频
+        // 开始播放视频
         videoView.start();
 
         layout_root.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +146,7 @@ public class VideoActivity extends BaseActivity{
                 finish();
             }
         });
-        //播放完成回调
+        // 播放完成回调
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
@@ -154,32 +158,33 @@ public class VideoActivity extends BaseActivity{
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             updateVideoViewSize();
-        }else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             updateVideoViewSize();
         }
     }
 
     private void updateVideoViewSize() {
-        if (videoHeight == 0 || videoWidth == 0){
+        if (videoHeight == 0 || videoWidth == 0) {
             return;
         }
-        Configuration mConfiguration = getResources().getConfiguration(); //获取设置的配置信息
-        if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT){
+        Configuration mConfiguration = getResources().getConfiguration(); // 获取设置的配置信息
+        if (mConfiguration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             RelativeLayout.LayoutParams videoViewParam;
-            float height = ((videoHeight*1f / videoWidth) * outMetrics.widthPixels);
+            float height = ((videoHeight * 1f / videoWidth) * outMetrics.widthPixels);
             videoViewParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) height);
             videoViewParam.addRule(RelativeLayout.CENTER_IN_PARENT);
             videoView.setLayoutParams(videoViewParam);
-        }else{
+        } else {
             RelativeLayout.LayoutParams videoViewParam;
-            float width = ((videoWidth*1f / videoHeight) * outMetrics.widthPixels);
-            videoViewParam = new RelativeLayout.LayoutParams((int) width,RelativeLayout.LayoutParams.MATCH_PARENT);
+            float width = ((videoWidth * 1f / videoHeight) * outMetrics.widthPixels);
+            videoViewParam = new RelativeLayout.LayoutParams((int) width, RelativeLayout.LayoutParams.MATCH_PARENT);
             videoViewParam.addRule(RelativeLayout.CENTER_IN_PARENT);
             videoView.setLayoutParams(videoViewParam);
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

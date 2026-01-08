@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-
 /**
  * Created by lisen on 2018/4/12.
  *
@@ -25,7 +24,6 @@ import androidx.core.content.ContextCompat;
 public abstract class BaseActivity extends AppCompatActivity {
 
     private int REQUEST_CODE_PERMISSION = 0x00001;
-
 
     /**
      * 请求权限
@@ -39,9 +37,11 @@ public abstract class BaseActivity extends AppCompatActivity {
             permissionSuccess(REQUEST_CODE_PERMISSION);
         } else {
             List<String> needPermissions = getDeniedPermissions(permissions);
-            ActivityCompat.requestPermissions(this, needPermissions.toArray(new String[needPermissions.size()]), REQUEST_CODE_PERMISSION);
+            ActivityCompat.requestPermissions(this, needPermissions.toArray(new String[needPermissions.size()]),
+                    REQUEST_CODE_PERMISSION);
         }
     }
+
     /**
      * 检测所有的权限是否都已授权
      *
@@ -50,6 +50,10 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     private boolean checkPermissions(String[] permissions) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        // Null check to prevent NullPointerException
+        if (permissions == null || permissions.length == 0) {
             return true;
         }
         for (String permission : permissions) {
@@ -68,16 +72,18 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     private List<String> getDeniedPermissions(String[] permissions) {
         List<String> needRequestPermissionList = new ArrayList<>();
+        // Null check to prevent NullPointerException
+        if (permissions == null) {
+            return needRequestPermissionList;
+        }
         for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission) !=
-                    PackageManager.PERMISSION_GRANTED ||
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED ||
                     ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                 needRequestPermissionList.add(permission);
             }
         }
         return needRequestPermissionList;
     }
-
 
     /**
      * 系统请求权限回调
@@ -95,8 +101,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             } else {
                 for (int i = 0; i < permissions.length; i++) {
                     String permission = permissions[i];
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)){
-//                        当用户设置不在询问，并且勾选拒绝权限后，显示提示对话框
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                        // 当用户设置不在询问，并且勾选拒绝权限后，显示提示对话框
                         permissonNecessity(REQUEST_CODE_PERMISSION);
                         return;
                     }
@@ -121,7 +127,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return true;
     }
 
-    public void showSettingDialog(){
+    public void showSettingDialog() {
         showTipsDialog();
     }
 
@@ -170,14 +176,16 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 权限获取失败
+     * 
      * @param requestCode
      */
     public void permissionFail(int requestCode) {
     }
+
     /**
      * 必要权限获取失败后(子类页面可以重写，做相应的操作)
      */
-    public void permissonNecessity(int requestCode){
+    public void permissonNecessity(int requestCode) {
 
     }
 

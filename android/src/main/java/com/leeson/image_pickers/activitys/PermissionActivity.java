@@ -2,10 +2,10 @@ package com.leeson.image_pickers.activitys;
 
 import android.os.Bundle;
 
-
 /**
  * Created by lisen on 2018-09-13.
- *  申请权限
+ * 申请权限
+ * 
  * @author lisen < 453354858@qq.com >
  */
 
@@ -17,10 +17,16 @@ public class PermissionActivity extends BaseActivity {
     private String[] strings;
 
     @Override
-    public void onCreate(Bundle savedInstanceState ) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         strings = getIntent().getStringArrayExtra(PERMISSIONS);
-        requestPermission(strings,CODE);
+        // Null check to prevent NullPointerException when permissions array is missing
+        if (strings == null || strings.length == 0) {
+            setResult(RESULT_CANCELED);
+            finish();
+            return;
+        }
+        requestPermission(strings, CODE);
     }
 
     @Override
@@ -33,7 +39,7 @@ public class PermissionActivity extends BaseActivity {
     @Override
     public void permissionSuccess(int requestCode) {
         super.permissionSuccess(requestCode);
-        setResult(RESULT_OK,getIntent());
+        setResult(RESULT_OK, getIntent());
         finish();
     }
 
@@ -42,6 +48,6 @@ public class PermissionActivity extends BaseActivity {
         super.permissonNecessity(requestCode);
         setResult(RESULT_CANCELED);
         finish();
-//        showSettingDialog();
+        // showSettingDialog();
     }
 }

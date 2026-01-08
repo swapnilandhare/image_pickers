@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Created by lisen on 2018-09-11.
  * 只选择多张图片，
@@ -60,16 +59,15 @@ public class SelectPicsActivity extends BaseActivity {
     public static final String HEIGHT = "HEIGHT";
     public static final String COMPRESS_SIZE = "COMPRESS_SIZE";
 
-    public static final String SELECT_COUNT = "SELECT_COUNT";//可选择的数量
+    public static final String SELECT_COUNT = "SELECT_COUNT";// 可选择的数量
 
-    public static final String COMPRESS_PATHS = "COMPRESS_PATHS";//压缩的画
-    public static final String CAMERA_MIME_TYPE = "CAMERA_MIME_TYPE";//直接调用拍照或拍视频时有效
-    public static final String VIDEO_RECORD_MAX_SECOND = "VIDEO_RECORD_MAX_SECOND";//录制视频最大时间（秒）
-    public static final String VIDEO_RECORD_MIN_SECOND = "VIDEO_RECORD_MIN_SECOND";//录制视频最最小时间（秒）
-    public static final String VIDEO_SELECT_MAX_SECOND = "VIDEO_SELECT_MAX_SECOND";//选择视频时视频最大时间（秒）
-    public static final String VIDEO_SELECT_MIN_SECOND = "VIDEO_SELECT_MIN_SECOND";//选择视频时视频最小时间（秒）
+    public static final String COMPRESS_PATHS = "COMPRESS_PATHS";// 压缩的画
+    public static final String CAMERA_MIME_TYPE = "CAMERA_MIME_TYPE";// 直接调用拍照或拍视频时有效
+    public static final String VIDEO_RECORD_MAX_SECOND = "VIDEO_RECORD_MAX_SECOND";// 录制视频最大时间（秒）
+    public static final String VIDEO_RECORD_MIN_SECOND = "VIDEO_RECORD_MIN_SECOND";// 录制视频最最小时间（秒）
+    public static final String VIDEO_SELECT_MAX_SECOND = "VIDEO_SELECT_MAX_SECOND";// 选择视频时视频最大时间（秒）
+    public static final String VIDEO_SELECT_MIN_SECOND = "VIDEO_SELECT_MIN_SECOND";// 选择视频时视频最小时间（秒）
     public static final String LANGUAGE = "LANGUAGE";
-
 
     @Override
     public void onCreate(@androidx.annotation.Nullable Bundle savedInstanceState) {
@@ -101,7 +99,7 @@ public class SelectPicsActivity extends BaseActivity {
             boolean isDarkStatusBarBlack = mainStyle.isDarkStatusBarBlack();
             int statusBarColor = mainStyle.getStatusBarColor();
             options.isDarkStatusBarBlack(isDarkStatusBarBlack);
-            options.setSkipCropMimeType(new String[]{PictureMimeType.ofGIF(), PictureMimeType.ofWEBP()});
+            options.setSkipCropMimeType(new String[] { PictureMimeType.ofGIF(), PictureMimeType.ofWEBP() });
             if (StyleUtils.checkStyleValidity(statusBarColor)) {
                 options.setStatusBarColor(statusBarColor);
                 options.setToolbarColor(statusBarColor);
@@ -114,38 +112,43 @@ public class SelectPicsActivity extends BaseActivity {
         return options;
     }
 
-    private int getLang(String language){
-        if ("chinese".equals(language)){
+    private int getLang(String language) {
+        if ("chinese".equals(language)) {
             return LanguageConfig.CHINESE;
-        }else if ("traditional_chinese".equals(language)){
+        } else if ("traditional_chinese".equals(language)) {
             return LanguageConfig.TRADITIONAL_CHINESE;
-        }else if ("english".equals(language)){
+        } else if ("english".equals(language)) {
             return LanguageConfig.ENGLISH;
-        }else if ("japanese".equals(language)){
+        } else if ("japanese".equals(language)) {
             return LanguageConfig.JAPAN;
-        }else if ("france".equals(language)){
+        } else if ("france".equals(language)) {
             return LanguageConfig.FRANCE;
-        }else if ("german".equals(language)){
+        } else if ("german".equals(language)) {
             return LanguageConfig.GERMANY;
-        }else if ("russian".equals(language)){
+        } else if ("russian".equals(language)) {
             return LanguageConfig.RU;
-        }else if ("vietnamese".equals(language)){
+        } else if ("vietnamese".equals(language)) {
             return LanguageConfig.VIETNAM;
-        }else if ("korean".equals(language)){
+        } else if ("korean".equals(language)) {
             return LanguageConfig.KOREA;
-        }else if ("portuguese".equals(language)){
+        } else if ("portuguese".equals(language)) {
             return LanguageConfig.PORTUGAL;
-        }else if ("spanish".equals(language)){
+        } else if ("spanish".equals(language)) {
             return LanguageConfig.SPANISH;
-        }else if ("arabic".equals(language)){
+        } else if ("arabic".equals(language)) {
             return LanguageConfig.AR;
         }
         return LanguageConfig.SYSTEM_LANGUAGE;
     }
+
     private void startSel() {
 
         String mode = getIntent().getStringExtra(GALLERY_MODE);
         Map<String, Number> uiColor = (Map<String, Number>) getIntent().getSerializableExtra(UI_COLOR);
+        // Null check to prevent NullPointerException in PictureStyleUtil.setStyle()
+        if (uiColor == null) {
+            uiColor = new HashMap<>();
+        }
 
         Number selectCount = getIntent().getIntExtra(SELECT_COUNT, 9);
         boolean showGif = getIntent().getBooleanExtra(SHOW_GIF, true);
@@ -163,83 +166,94 @@ public class SelectPicsActivity extends BaseActivity {
 
         String language = getIntent().getStringExtra(LANGUAGE);
 
-
         PictureStyleUtil pictureStyleUtil = new PictureStyleUtil(this);
         pictureStyleUtil.setStyle(uiColor);
         PictureSelectorStyle selectorStyle = pictureStyleUtil.getSelectorStyle();
-        //添加图片
+        // 添加图片
         PictureSelector pictureSelector = PictureSelector.create(this);
         if (mimeType != null) {
-            //直接调用拍照或拍视频时
-            PictureSelector.create(this).openCamera("photo".equals(mimeType) ? SelectMimeType.ofImage() : SelectMimeType.ofVideo())
+            // 直接调用拍照或拍视频时
+            PictureSelector.create(this)
+                    .openCamera("photo".equals(mimeType) ? SelectMimeType.ofImage() : SelectMimeType.ofVideo())
                     .setRecordVideoMaxSecond(videoRecordMaxSecond.intValue())
                     .setRecordVideoMinSecond(videoRecordMinSecond.intValue())
                     .setLanguage(getLang(language))
                     .setOutputCameraDir(new AppPath(this).getAppVideoDirPath())
-                    .setCropEngine((enableCrop) ?
-                            new ImageCropEngine(this, buildOptions(selectorStyle), width.intValue(), height.intValue()) : null)
+                    .setCropEngine(
+                            (enableCrop)
+                                    ? new ImageCropEngine(this, buildOptions(selectorStyle), width.intValue(),
+                                            height.intValue())
+                                    : null)
                     .setCompressEngine(new ImageCompressEngine(compressSize.intValue()))
-                    ./*setCameraInterceptListener(new OnCameraInterceptListener() {
-                @Override
-                public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
-                    //自定义相机
-                    Log.e("TAG", "openCamera: 自定义相机" );
-                }
-            }).*/setSandboxFileEngine(new MeSandboxFileEngine()).forResult(new OnResultCallbackListener<LocalMedia>() {
-                @Override
-                public void onResult(ArrayList<LocalMedia> result) {
-                    if (result != null && result.size() > 0){
-                        LocalMedia localMedia = result.get(0);
-                        if ("video".equals(mimeType)){
-                            long videoDuration = localMedia.getDuration()/1000;
-                            if(videoDuration < videoRecordMinSecond.intValue() || videoDuration > videoRecordMaxSecond.intValue()){
-                                String tips = "";
-                                if (videoDuration < videoRecordMinSecond.intValue()){
-                                    tips = getString(com.luck.picture.lib.R.string.ps_select_video_min_second,videoRecordMinSecond.intValue());
-                                }else if (videoDuration > videoRecordMaxSecond.intValue()){
-                                    tips = getString(com.luck.picture.lib.R.string.ps_select_video_max_second,videoRecordMaxSecond.intValue());
-                                }
-                                RemindDialog tipsDialog = RemindDialog.buildDialog(SelectPicsActivity.this,tips);
-                                tipsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                    @Override
-                                    public void onDismiss(DialogInterface dialog) {
-                                        Intent intent = new Intent();
-                                        intent.putExtra(COMPRESS_PATHS, new ArrayList<>());
-                                        setResult(RESULT_OK, intent);
-                                        finish();
+                    ./*
+                      * setCameraInterceptListener(new OnCameraInterceptListener() {
+                      * 
+                      * @Override
+                      * public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
+                      * //自定义相机
+                      * Log.e("TAG", "openCamera: 自定义相机" );
+                      * }
+                      * }).
+                      */setSandboxFileEngine(new MeSandboxFileEngine())
+                    .forResult(new OnResultCallbackListener<LocalMedia>() {
+                        @Override
+                        public void onResult(ArrayList<LocalMedia> result) {
+                            if (result != null && result.size() > 0) {
+                                LocalMedia localMedia = result.get(0);
+                                if ("video".equals(mimeType)) {
+                                    long videoDuration = localMedia.getDuration() / 1000;
+                                    if (videoDuration < videoRecordMinSecond.intValue()
+                                            || videoDuration > videoRecordMaxSecond.intValue()) {
+                                        String tips = "";
+                                        if (videoDuration < videoRecordMinSecond.intValue()) {
+                                            tips = getString(com.luck.picture.lib.R.string.ps_select_video_min_second,
+                                                    videoRecordMinSecond.intValue());
+                                        } else if (videoDuration > videoRecordMaxSecond.intValue()) {
+                                            tips = getString(com.luck.picture.lib.R.string.ps_select_video_max_second,
+                                                    videoRecordMaxSecond.intValue());
+                                        }
+                                        RemindDialog tipsDialog = RemindDialog.buildDialog(SelectPicsActivity.this,
+                                                tips);
+                                        tipsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                            @Override
+                                            public void onDismiss(DialogInterface dialog) {
+                                                Intent intent = new Intent();
+                                                intent.putExtra(COMPRESS_PATHS, new ArrayList<>());
+                                                setResult(RESULT_OK, intent);
+                                                finish();
+                                            }
+                                        });
+                                        tipsDialog.show();
+                                    } else {
+                                        handlerResult(result);
                                     }
-                                });
-                                tipsDialog.show();
-                            }else{
-                                handlerResult(result);
+                                } else {
+                                    handlerResult(result);
+                                }
+                            } else {
+                                Intent intent = new Intent();
+                                intent.putExtra(COMPRESS_PATHS, new ArrayList<>());
+                                setResult(RESULT_OK, intent);
+                                finish();
                             }
-                        }else{
-                            handlerResult(result);
                         }
-                    }else{
-                        Intent intent = new Intent();
-                        intent.putExtra(COMPRESS_PATHS, new ArrayList<>());
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                }
 
-                @Override
-                public void onCancel() {
-                    Intent intent = new Intent();
-                    intent.putExtra(COMPRESS_PATHS, new ArrayList<>());
-                    setResult(RESULT_OK, intent);
-                    finish();
-                }
-            });
+                        @Override
+                        public void onCancel() {
+                            Intent intent = new Intent();
+                            intent.putExtra(COMPRESS_PATHS, new ArrayList<>());
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    });
         } else {
 
             int selectMimeType = SelectMimeType.ofImage();
-            if("image".equals(mode)){
+            if ("image".equals(mode)) {
                 selectMimeType = SelectMimeType.ofImage();
-            }else if ("video".equals(mode)){
+            } else if ("video".equals(mode)) {
                 selectMimeType = SelectMimeType.ofVideo();
-            }else{
+            } else {
                 selectMimeType = SelectMimeType.ofAll();
             }
 
@@ -251,8 +265,11 @@ public class SelectPicsActivity extends BaseActivity {
                     .setRecordVideoMinSecond(videoRecordMinSecond.intValue())
                     .setLanguage(getLang(language))
                     .setOutputCameraDir(new AppPath(this).getAppVideoDirPath())
-                    .setCropEngine(enableCrop ?
-                            new ImageCropEngine(this, buildOptions(selectorStyle), width.intValue(), height.intValue()) : null)
+                    .setCropEngine(
+                            enableCrop
+                                    ? new ImageCropEngine(this, buildOptions(selectorStyle), width.intValue(),
+                                            height.intValue())
+                                    : null)
                     .setCompressEngine(new ImageCompressEngine(compressSize.intValue()))
                     .setSandboxFileEngine(new MeSandboxFileEngine())
                     .isDisplayCamera(showCamera)
@@ -265,9 +282,14 @@ public class SelectPicsActivity extends BaseActivity {
                     .setMaxVideoSelectNum(selectCount.intValue())
                     .isWithSelectVideoImage(true)
                     .setImageSpanCount(4)// 每行显示个数 int
-                    .setSelectionMode(selectCount.intValue() == 1 ? SelectModeConfig.SINGLE : SelectModeConfig.MULTIPLE)// 多选 or 单选 PictureConfig.MULTIPLE or PictureConfig.SINGLE
+                    .setSelectionMode(selectCount.intValue() == 1 ? SelectModeConfig.SINGLE : SelectModeConfig.MULTIPLE)// 多选
+                                                                                                                        // or
+                                                                                                                        // 单选
+                                                                                                                        // PictureConfig.MULTIPLE
+                                                                                                                        // or
+                                                                                                                        // PictureConfig.SINGLE
                     .isDirectReturnSingle(true)
-                    .setSkipCropMimeType(new String[]{PictureMimeType.ofGIF(), PictureMimeType.ofWEBP()})
+                    .setSkipCropMimeType(new String[] { PictureMimeType.ofGIF(), PictureMimeType.ofWEBP() })
                     .isPreviewImage(true)
                     .isPreviewVideo(true)
                     .forResult(new OnResultCallbackListener<LocalMedia>() {
@@ -288,13 +310,12 @@ public class SelectPicsActivity extends BaseActivity {
 
     }
 
-
     private void handlerResult(ArrayList<LocalMedia> selectList) {
         List<Map<String, String>> paths = new ArrayList<>();
         for (int i = 0; i < selectList.size(); i++) {
             LocalMedia localMedia = selectList.get(i);
 
-            if (localMedia.getMimeType().contains("image")){
+            if (localMedia.getMimeType().contains("image")) {
                 String path = localMedia.getAvailablePath();
                 if (localMedia.isCut()) {
                     path = localMedia.getCutPath();
@@ -304,11 +325,12 @@ public class SelectPicsActivity extends BaseActivity {
                 map.put("path", path);
                 paths.add(map);
 
-            }else{
+            } else {
                 if (localMedia.getAvailablePath() == null) {
                     break;
                 }
-                Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(localMedia.getAvailablePath(), MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
+                Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(localMedia.getAvailablePath(),
+                        MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
                 String thumbPath = CommonUtils.saveBitmap(this, new AppPath(this).getAppImgDirPath(), bitmap);
                 Map<String, String> map = new HashMap<>();
                 map.put("thumbPath", thumbPath);
