@@ -4,18 +4,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0cdfd5ac-d0bc-40e5-a503-df650d375c68" name="Changes" comment="Fix: Add null checks to prevent crashes in Android activities&#10;&#10;- Add null checks in `PhotosActivity`, `VideoActivity`, `PermissionActivity`, `SelectPicsActivity`, and `BaseActivity` to prevent `NullPointerException` when handling intents, permissions, or UI elements.&#10;- Ensure `uiColor` maps are initialized to prevent crashes in `PictureStyleUtil` and `SelectPicsActivity`.&#10;- Add IDE and build-related files to `.gitignore`.">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/BaseActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/BaseActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/PermissionActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/PermissionActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/PhotosActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/PhotosActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/SelectPicsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/SelectPicsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/VideoActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/activitys/VideoActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/utils/PictureStyleUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/utils/PictureStyleUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/example/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+    <list default="true" id="0cdfd5ac-d0bc-40e5-a503-df650d375c68" name="Changes" comment="Fix: Add null checks to prevent crashes in Android activities&#10;&#10;- Add null checks in `PhotosActivity`, `VideoActivity`, `PermissionActivity`, `SelectPicsActivity`, and `BaseActivity` to prevent `NullPointerException` when handling intents, permissions, or UI elements.&#10;- Ensure `uiColor` maps are initialized in `PictureStyleUtil` and `SelectPicsActivity` to prevent crashes.&#10;- Update pubspec.lock files with newer dependency versions.&#10;- Minor code cleanup and formatting adjustments.">
+      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/ImagePickersPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/ImagePickersPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/MethodCallImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/leeson/image_pickers/MethodCallImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -283,7 +274,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758260020820</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Fix: Add null checks to prevent crashes in Android activities&#10;&#10;- Add null checks in `PhotosActivity`, `VideoActivity`, `PermissionActivity`, `SelectPicsActivity`, and `BaseActivity` to prevent `NullPointerException` when handling intents, permissions, or UI elements.&#10;- Ensure `uiColor` maps are initialized in `PictureStyleUtil` and `SelectPicsActivity` to prevent crashes.&#10;- Update pubspec.lock files with newer dependency versions.&#10;- Minor code cleanup and formatting adjustments.">
+      <option name="closed" value="true" />
+      <created>1767857127694</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1767857127694</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -325,6 +324,7 @@
     <MESSAGE value="Revert &quot;Fix edge-to-edge overlap issues for Android 15+&quot;&#10;&#10;This reverts commit 4fff6d82" />
     <MESSAGE value="Revert &quot;Enhanced edge-to-edge prevention with comprehensive fixes&quot;&#10;&#10;This reverts commit aefc3e88" />
     <MESSAGE value="ios下载本地gif和网络gif等问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="ios下载本地gif和网络gif等问题" />
+    <MESSAGE value="Fix: Add null checks to prevent crashes in Android activities&#10;&#10;- Add null checks in `PhotosActivity`, `VideoActivity`, `PermissionActivity`, `SelectPicsActivity`, and `BaseActivity` to prevent `NullPointerException` when handling intents, permissions, or UI elements.&#10;- Ensure `uiColor` maps are initialized in `PictureStyleUtil` and `SelectPicsActivity` to prevent crashes.&#10;- Update pubspec.lock files with newer dependency versions.&#10;- Minor code cleanup and formatting adjustments." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix: Add null checks to prevent crashes in Android activities&#10;&#10;- Add null checks in `PhotosActivity`, `VideoActivity`, `PermissionActivity`, `SelectPicsActivity`, and `BaseActivity` to prevent `NullPointerException` when handling intents, permissions, or UI elements.&#10;- Ensure `uiColor` maps are initialized in `PictureStyleUtil` and `SelectPicsActivity` to prevent crashes.&#10;- Update pubspec.lock files with newer dependency versions.&#10;- Minor code cleanup and formatting adjustments." />
   </component>
 </project>

@@ -55,7 +55,7 @@ public class MethodCallImpl implements MethodChannel.MethodCallHandler, PluginRe
 
         if ("getPickerPaths".equals(methodCall.method)) {
             String galleryMode = methodCall.argument("galleryMode");
-            Map<String,Number> uiColor = methodCall.argument("uiColor");
+            Map<String, Number> uiColor = methodCall.argument("uiColor");
             Number selectCount = methodCall.argument("selectCount");
             Boolean showCamera = methodCall.argument("showCamera");
             Boolean enableCrop = methodCall.argument("enableCrop");
@@ -65,16 +65,16 @@ public class MethodCallImpl implements MethodChannel.MethodCallHandler, PluginRe
             String cameraMimeType = methodCall.argument("cameraMimeType");
 
             Intent intent = new Intent(activityPluginBinding.getActivity(), SelectPicsActivity.class);
-            intent.putExtra(SelectPicsActivity.GALLERY_MODE,galleryMode);
+            intent.putExtra(SelectPicsActivity.GALLERY_MODE, galleryMode);
             intent.putExtra(SelectPicsActivity.UI_COLOR, (Serializable) uiColor);
-            intent.putExtra(SelectPicsActivity.SELECT_COUNT,selectCount);
-            intent.putExtra(SelectPicsActivity.SHOW_CAMERA,showCamera);
-            intent.putExtra(SelectPicsActivity.ENABLE_CROP,enableCrop);
-            intent.putExtra(SelectPicsActivity.WIDTH,width);
-            intent.putExtra(SelectPicsActivity.HEIGHT,height);
-            intent.putExtra(SelectPicsActivity.COMPRESS_SIZE,compressSize);
-            //直接调用拍照或拍视频时有效
-            intent.putExtra(SelectPicsActivity.CAMERA_MIME_TYPE,cameraMimeType);
+            intent.putExtra(SelectPicsActivity.SELECT_COUNT, selectCount);
+            intent.putExtra(SelectPicsActivity.SHOW_CAMERA, showCamera);
+            intent.putExtra(SelectPicsActivity.ENABLE_CROP, enableCrop);
+            intent.putExtra(SelectPicsActivity.WIDTH, width);
+            intent.putExtra(SelectPicsActivity.HEIGHT, height);
+            intent.putExtra(SelectPicsActivity.COMPRESS_SIZE, compressSize);
+            // 直接调用拍照或拍视频时有效
+            intent.putExtra(SelectPicsActivity.CAMERA_MIME_TYPE, cameraMimeType);
             activityPluginBinding.getActivity().startActivityForResult(intent, SELECT);
 
         } else if ("previewImage".equals(methodCall.method)) {
@@ -95,87 +95,98 @@ public class MethodCallImpl implements MethodChannel.MethodCallHandler, PluginRe
             intent.putExtra(VideoActivity.VIDEO_PATH, methodCall.argument("path").toString());
             intent.putExtra(VideoActivity.THUMB_PATH, methodCall.argument("thumbPath").toString());
             activityPluginBinding.getActivity().startActivity(intent);
-        } else if("saveImageToGallery".equals(methodCall.method)) {
+        } else if ("saveImageToGallery".equals(methodCall.method)) {
             Intent intent = new Intent(activityPluginBinding.getActivity(), PermissionActivity.class);
-            intent.putExtra(PermissionActivity.PERMISSIONS, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ,Manifest.permission.READ_EXTERNAL_STORAGE});
-            intent.putExtra("imageUrl",methodCall.argument("path").toString());
-            activityPluginBinding.getActivity().startActivityForResult(intent,SAVE_IMAGE);
-        } else if("saveVideoToGallery".equals(methodCall.method)) {
+            intent.putExtra(PermissionActivity.PERMISSIONS, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE });
+            intent.putExtra("imageUrl", methodCall.argument("path").toString());
+            activityPluginBinding.getActivity().startActivityForResult(intent, SAVE_IMAGE);
+        } else if ("saveVideoToGallery".equals(methodCall.method)) {
             Intent intent = new Intent(activityPluginBinding.getActivity(), PermissionActivity.class);
-            intent.putExtra(PermissionActivity.PERMISSIONS, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ,Manifest.permission.READ_EXTERNAL_STORAGE});
-            intent.putExtra("videoUrl",methodCall.argument("path").toString());
+            intent.putExtra(PermissionActivity.PERMISSIONS, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE });
+            intent.putExtra("videoUrl", methodCall.argument("path").toString());
             activityPluginBinding.getActivity().startActivityForResult(intent, WRITE_SDCARD);
-        } else if("saveByteDataImageToGallery".equals(methodCall.method)){
+        } else if ("saveByteDataImageToGallery".equals(methodCall.method)) {
             Intent intent = new Intent(activityPluginBinding.getActivity(), PermissionActivity.class);
-            intent.putExtra(PermissionActivity.PERMISSIONS, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ,Manifest.permission.READ_EXTERNAL_STORAGE});
-            data = (byte[])methodCall.argument("uint8List");
+            intent.putExtra(PermissionActivity.PERMISSIONS, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE });
+            data = (byte[]) methodCall.argument("uint8List");
             activityPluginBinding.getActivity().startActivityForResult(intent, SAVE_IMAGE_DATA);
-        }else {
+        } else {
             result.notImplemented();
         }
     }
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == SELECT ) {
-            if (resultCode == Activity.RESULT_OK){
-                List<Map<String,String>> paths = (List<Map<String,String>>) intent.getSerializableExtra(SelectPicsActivity.COMPRESS_PATHS);
-                Log.e("onActivityResult", "onActivityResult: "+paths.size()+" == "+result);
-                if (result != null){
-                    result.success(paths);
+        if (requestCode == SELECT) {
+            if (resultCode == Activity.RESULT_OK && intent != null) {
+                List<Map<String, String>> paths = (List<Map<String, String>>) intent
+                        .getSerializableExtra(SelectPicsActivity.COMPRESS_PATHS);
+                if (paths != null) {
+                    Log.e("onActivityResult", "onActivityResult: " + paths.size() + " == " + result);
+                    if (result != null) {
+                        result.success(paths);
+                    }
+                } else {
+                    if (result != null) {
+                        result.success(new ArrayList<>());
+                    }
+                }
+            } else {
+                if (result != null) {
+                    result.success(new ArrayList<>());
                 }
             }
             return true;
-        }else if (requestCode == SAVE_IMAGE){
-            if (resultCode == Activity.RESULT_OK){
+        } else if (requestCode == SAVE_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
                 String imageUrl = intent.getStringExtra("imageUrl");
                 Saver imageSaver = new Saver(activityPluginBinding.getActivity());
                 imageSaver.saveImgToGallery(imageUrl, new Saver.IFinishListener() {
                     @Override
                     public void onSuccess(Saver.FileInfo fileInfo) {
-                        if (result != null){
+                        if (result != null) {
                             result.success(fileInfo.getPath());
                         }
                     }
 
                     @Override
                     public void onFailed(String errorMsg) {
-                        if (result != null){
-                            result.error("-1",errorMsg,errorMsg);
+                        if (result != null) {
+                            result.error("-1", errorMsg, errorMsg);
                         }
                     }
                 });
             }
-        }else if(requestCode == WRITE_SDCARD){
-            if (resultCode == Activity.RESULT_OK){
+        } else if (requestCode == WRITE_SDCARD) {
+            if (resultCode == Activity.RESULT_OK) {
                 String videoUrl = intent.getStringExtra("videoUrl");
                 Saver videoSaver = new Saver(activityPluginBinding.getActivity());
                 videoSaver.saveVideoToGallery(videoUrl, new Saver.IFinishListener() {
                     @Override
                     public void onSuccess(Saver.FileInfo fileInfo) {
-                        if (result != null){
+                        if (result != null) {
                             result.success(fileInfo.getPath());
                         }
                     }
 
                     @Override
                     public void onFailed(String errorMsg) {
-                        if (result != null){
-                            result.error("-1",errorMsg,errorMsg);
+                        if (result != null) {
+                            result.error("-1", errorMsg, errorMsg);
                         }
                     }
                 });
             }
-        }else if(requestCode == SAVE_IMAGE_DATA){
-            if (resultCode == Activity.RESULT_OK && data != null){
+        } else if (requestCode == SAVE_IMAGE_DATA) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
                 Saver saver = new Saver(activityPluginBinding.getActivity());
                 saver.saveByteDataToGallery(data, new Saver.IFinishListener() {
                     @Override
                     public void onSuccess(Saver.FileInfo fileInfo) {
-                        if (result != null){
+                        if (result != null) {
                             result.success(fileInfo.getPath());
                         }
                         data = null;
@@ -183,8 +194,8 @@ public class MethodCallImpl implements MethodChannel.MethodCallHandler, PluginRe
 
                     @Override
                     public void onFailed(String errorMsg) {
-                        if (result != null){
-                            result.error("-1",errorMsg,errorMsg);
+                        if (result != null) {
+                            result.error("-1", errorMsg, errorMsg);
                         }
                         data = null;
                     }
